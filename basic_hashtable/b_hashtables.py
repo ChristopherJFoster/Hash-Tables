@@ -14,10 +14,10 @@ class Pair:
 # Fill this in.  All storage values should be initialized to None
 # '''
 class BasicHashTable:
-    def __init__(self, capacity):
-        self.capacity = capacity
+    def __init__(self, storage):
+        self.storage = storage
         self.count = 0
-        self.elements = [None] * capacity
+        self.elements = [None] * storage
 
 
 # '''
@@ -37,7 +37,11 @@ def hash(string, max):
 # If you are overwriting a value with a different key, print a warning.
 # '''
 def hash_table_insert(hash_table, key, value):
-    pass
+    hash_table.count += 1
+    if hash_table.elements[hash(key, hash_table.count)] != None:
+        print('Warning: overwriting value')
+        hash_table.count -= 1
+    hash_table.elements[hash(key, hash_table.count)] = Pair(key, value)
 
 
 # '''
@@ -46,7 +50,8 @@ def hash_table_insert(hash_table, key, value):
 # If you try to remove a value that isn't there, print a warning.
 # '''
 def hash_table_remove(hash_table, key):
-    pass
+    if hash_table.elements[hash(key, hash_table.count)] != None and hash_table.elements[hash(key, hash_table.count)].key == key:
+        hash_table.elements[hash(key, hash_table.count)] = None
 
 
 # '''
@@ -55,7 +60,10 @@ def hash_table_remove(hash_table, key):
 # Should return None if the key is not found.
 # '''
 def hash_table_retrieve(hash_table, key):
-    pass
+    if hash_table.elements[hash(key, hash_table.count)] != None and hash_table.elements[hash(key, hash_table.count)].key == key:
+        return hash_table.elements[hash(key, hash_table.count)].value
+    else:
+        return None
 
 
 def Testing():
@@ -68,13 +76,8 @@ def Testing():
     if hash_table_retrieve(ht, "line") is None:
         print("...gone tomorrow (success!)")
     else:
+        print(ht.elements[0].value)
         print("ERROR:  STILL HERE")
 
 
 Testing()
-
-print(hash('ash', 5))
-print(hash('bash', 5))
-print(hash('cash', 5))
-print(hash('dash', 5))
-print(hash('gash', 5))
