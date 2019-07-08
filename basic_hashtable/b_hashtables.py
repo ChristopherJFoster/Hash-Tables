@@ -14,10 +14,10 @@ class Pair:
 # Fill this in.  All storage values should be initialized to None
 # '''
 class BasicHashTable:
-    def __init__(self, storage):
-        self.storage = storage
+    def __init__(self, capacity):
+        self.capacity = capacity
         self.count = 0
-        self.elements = [None] * storage
+        self.storage = [None] * capacity
 
 
 # '''
@@ -38,10 +38,10 @@ def hash(string, max):
 # '''
 def hash_table_insert(hash_table, key, value):
     hash_table.count += 1
-    if hash_table.elements[hash(key, hash_table.count)] != None:
+    if hash_table.count > 0 and hash_table.storage[hash(key, hash_table.count)] != None:
         print('Warning: overwriting value')
         hash_table.count -= 1
-    hash_table.elements[hash(key, hash_table.count)] = Pair(key, value)
+    hash_table.storage[hash(key, hash_table.count)] = Pair(key, value)
 
 
 # '''
@@ -50,8 +50,9 @@ def hash_table_insert(hash_table, key, value):
 # If you try to remove a value that isn't there, print a warning.
 # '''
 def hash_table_remove(hash_table, key):
-    if hash_table.elements[hash(key, hash_table.count)] != None and hash_table.elements[hash(key, hash_table.count)].key == key:
-        hash_table.elements[hash(key, hash_table.count)] = None
+    if hash_table.count > 0 and hash_table.storage[hash(key, hash_table.count)] != None and hash_table.storage[hash(key, hash_table.count)].key == key:
+        hash_table.storage[hash(key, hash_table.count)] = None
+        hash_table.count -= 1
 
 
 # '''
@@ -60,8 +61,8 @@ def hash_table_remove(hash_table, key):
 # Should return None if the key is not found.
 # '''
 def hash_table_retrieve(hash_table, key):
-    if hash_table.elements[hash(key, hash_table.count)] != None and hash_table.elements[hash(key, hash_table.count)].key == key:
-        return hash_table.elements[hash(key, hash_table.count)].value
+    if hash_table.count > 0 and hash_table.storage[hash(key, hash_table.count)] != None and hash_table.storage[hash(key, hash_table.count)].key == key:
+        return hash_table.storage[hash(key, hash_table.count)].value
     else:
         return None
 
@@ -76,7 +77,7 @@ def Testing():
     if hash_table_retrieve(ht, "line") is None:
         print("...gone tomorrow (success!)")
     else:
-        print(ht.elements[0].value)
+        print(ht.storage[0].value)
         print("ERROR:  STILL HERE")
 
 
