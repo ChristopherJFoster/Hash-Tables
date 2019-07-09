@@ -18,7 +18,6 @@ class LinkedPair:
 class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity
-        self.count = 0
         self.storage = [None] * capacity
 
 
@@ -38,13 +37,10 @@ def hash(string, max):
 # Hint: Use the LL to handle collisions
 # '''
 def hash_table_insert(hash_table, key, value):
-    hash_table.count += 1
     if hash_table.storage[hash(key, hash_table.capacity)] == None:
         hash_table.storage[hash(key, hash_table.capacity)
                            ] = LinkedPair(key, value)
     else:
-        hash_table.count -= 1
-
         def linked_list_rec(hash_table, current_pair, key, value):
             if current_pair.next == None:
                 current_pair.next = LinkedPair(key, value)
@@ -52,7 +48,7 @@ def hash_table_insert(hash_table, key, value):
                 linked_list_rec(hash_table, current_pair.next, key, value)
 
         linked_list_rec(hash_table, hash_table.storage[hash(
-            key, hash_table.count)], key, value)
+            key, hash_table.capacity)], key, value)
 
 
 # '''
@@ -71,10 +67,9 @@ def hash_table_remove(hash_table, key):
 # '''
 def hash_table_retrieve(hash_table, key):
     return_value = None
-    # print('hash_table.count:', hash_table.count)
     # print('hash(key, hash_table.capacity):',
     #       hash(key, hash_table.capacity))
-    if hash_table.count > 0 and hash_table.storage[hash(key, hash_table.capacity)] != None:
+    if hash_table.storage[hash(key, hash_table.capacity)] != None:
         def linked_list_rec(hash_table, current_pair, key):
             nonlocal return_value
             # print('current_pair.key, key: ', current_pair.key, key)
