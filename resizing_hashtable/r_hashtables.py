@@ -17,23 +17,40 @@ class LinkedPair:
 # '''
 class HashTable:
     def __init__(self, capacity):
-        pass
+        self.capacity = capacity
+        self.count = 0
+        self.storage = [None] * capacity
 
 
 # '''
 # Research and implement the djb2 hash function
 # '''
 def hash(string, max):
-    pass
+    hash = 5381
+    for l in string:
+        hash = ((hash << 5) + hash) + ord(l)
+    return hash % max
 
 
 # '''
 # Fill this in.
 
-# Hint: Used the LL to handle collisions
+# Hint: Use the LL to handle collisions
 # '''
 def hash_table_insert(hash_table, key, value):
-    pass
+    hash_table.count += 1
+    if hash_table.storage[hash(key, hash_table.count)] == None:
+        hash_table.storage[hash(key, hash_table.count)
+                           ] = LinkedPair(key, value)
+    else:
+        def linked_list_rec(hash_table, existing_value, key, value):
+            if existing_value.next == None:
+                existing_value.next = LinkedPair(key, value)
+            else:
+                linked_list_rec(hash_table, existing_value.next, key, value)
+
+        linked_list_rec(hash_table, hash_table.storage[hash(
+            key, hash_table.count)], key, value)
 
 
 # '''
