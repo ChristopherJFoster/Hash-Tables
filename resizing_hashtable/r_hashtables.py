@@ -57,14 +57,31 @@ def hash_table_insert(hash_table, key, value):
 # If you try to remove a value that isn't there, print a warning.
 # '''
 def hash_table_remove(hash_table, key):
-    pass
-
+    if hash_table.storage[hash(key, hash_table.capacity)] == None:
+        print('Warning: supplied key does not exist')
+    elif hash_table.storage[hash(key, hash_table.capacity)].key == key:
+        hash_table.storage[hash(key, hash_table.capacity)] = hash_table.storage[hash(
+            key, hash_table.capacity)].next
+    else:
+        def linked_list_rec(hash_table, current_pair, key):
+            if current_pair.next == None:
+                print('Warning: supplied key does not exist')
+                return
+            elif current_pair.next.key == key:
+                current_pair.next = current_pair.next.next
+                return
+            else:
+                linked_list_rec(hash_table, current_pair.next, key)
+        linked_list_rec(hash_table, hash_table.storage[hash(
+            key, hash_table.capacity)], key)
 
 # '''
 # Fill this in.
 
 # Should return None if the key is not found.
 # '''
+
+
 def hash_table_retrieve(hash_table, key):
     return_value = None
     # print('hash(key, hash_table.capacity):',
@@ -102,18 +119,16 @@ def Testing():
     hash_table_insert(ht, "line_2", "Filled beyond capacity")
     hash_table_insert(ht, "line_3", "Linked list saves the day!")
 
-    print('<<<inserts passed>>>')
-
     print(hash_table_retrieve(ht, "line_1"))
     print(hash_table_retrieve(ht, "line_2"))
     print(hash_table_retrieve(ht, "line_3"))
 
-    # old_capacity = len(ht.storage)
-    # ht = hash_table_resize(ht)
-    # new_capacity = len(ht.storage)
+    old_capacity = len(ht.storage)
+    ht = hash_table_resize(ht)
+    new_capacity = len(ht.storage)
 
-    # print("Resized hash table from " + str(old_capacity)
-    #       + " to " + str(new_capacity) + ".")
+    print("Resized hash table from " + str(old_capacity)
+          + " to " + str(new_capacity) + ".")
 
 
 Testing()
