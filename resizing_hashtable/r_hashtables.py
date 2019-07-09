@@ -109,7 +109,21 @@ def hash_table_retrieve(hash_table, key):
 
 
 def hash_table_resize(hash_table):
-    pass
+    temp_table = HashTable(hash_table.capacity * 2)
+
+    for slot in hash_table.storage:
+        if slot != None:
+            def linked_list_rec(hash_table, current_pair):
+                nonlocal temp_table
+                hash_table_insert(
+                    temp_table, current_pair.key, current_pair.value)
+                if current_pair.next != None:
+                    linked_list_rec(hash_table, current_pair.next)
+                else:
+                    return
+            linked_list_rec(hash_table, slot)
+
+    return temp_table
 
 
 def Testing():
