@@ -23,10 +23,11 @@ class HashTable:
         self.storage = [None] * capacity
         self.count = 0
 
-    def resize(self):
-        self.capacity = self.capacity * 2
+    def resize_up(self):
         temp_storage = copy.deepcopy(self.storage)
+        self.capacity = self.capacity * 2
         self.storage = [None] * self.capacity
+        self.count = 0
 
         for slot in temp_storage:
             if slot != None:
@@ -39,6 +40,22 @@ class HashTable:
                         return
                 linked_list_rec(self, slot)
 
+    def resize_down(self):
+        temp_storage = copy.deepcopy(self.storage)
+        self.capacity = int(self.capacity / 2)
+        self.storage = [None] * self.capacity
+        self.count = 0
+
+        for slot in temp_storage:
+            if slot != None:
+                def linked_list_rec(hash_table, current_pair):
+                    hash_table_insert(
+                        self, current_pair.key, current_pair.value, True)
+                    if current_pair.next != None:
+                        linked_list_rec(hash_table, current_pair.next)
+                    else:
+                        return
+                linked_list_rec(self, slot)
 
 # '''
 # Research and implement the djb2 hash function
@@ -72,8 +89,9 @@ def hash_table_insert(hash_table, key, value, resize=False):
         linked_list_rec(hash_table, hash_table.storage[hash(
             key, hash_table.capacity)], key, value)
 
-    if hash_table.count / hash_table.capacity > 0.7 and resize == False:
-        hash_table.resize()
+    if resize == False and hash_table.count / hash_table.capacity > 0.7:
+        print(hash_table.count / hash_table.capacity, 'up!')
+        hash_table.resize_up()
 
 
 # '''
@@ -101,6 +119,10 @@ def hash_table_remove(hash_table, key):
                 linked_list_rec(hash_table, current_pair.next, key)
         linked_list_rec(hash_table, hash_table.storage[hash(
             key, hash_table.capacity)], key)
+
+    if hash_table.count / hash_table.capacity < 0.2:
+        print(hash_table.count / hash_table.capacity, 'down!')
+        hash_table.resize_down()
 
 # '''
 # Fill this in.
@@ -158,16 +180,21 @@ def Testing():
     hash_table_insert(ht, "line_3", "Linked list saves the day!")
     print('count: ', ht.count, 'capacity: ', ht.capacity)
 
-    print(hash_table_retrieve(ht, "line_1"))
-    print(hash_table_retrieve(ht, "line_2"))
-    print(hash_table_retrieve(ht, "line_3"))
+    hash_table_remove(ht, "line_2")
+    print('count: ', ht.count, 'capacity: ', ht.capacity)
+    hash_table_remove(ht, "line_3")
+    print('count: ', ht.count, 'capacity: ', ht.capacity)
 
-    old_capacity = len(ht.storage)
-    ht = hash_table_resize(ht)
-    new_capacity = len(ht.storage)
+    # print(hash_table_retrieve(ht, "line_1"))
+    # print(hash_table_retrieve(ht, "line_2"))
+    # print(hash_table_retrieve(ht, "line_3"))
 
-    print("Resized hash table from " + str(old_capacity)
-          + " to " + str(new_capacity) + ".")
+    # old_capacity = len(ht.storage)
+    # ht = hash_table_resize(ht)
+    # new_capacity = len(ht.storage)
+
+    # print("Resized hash table from " + str(old_capacity)
+    #       + " to " + str(new_capacity) + ".")
 
 
 Testing()
