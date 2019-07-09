@@ -37,7 +37,7 @@ def hash(string, max):
 # Hint: Use the LL to handle collisions
 # '''
 def hash_table_insert(hash_table, key, value):
-    if hash_table.storage[hash(key, hash_table.capacity)] == None:
+    if hash_table.storage[hash(key, hash_table.capacity)] == None or hash_table.storage[hash(key, hash_table.capacity)].key == key:
         hash_table.storage[hash(key, hash_table.capacity)
                            ] = LinkedPair(key, value)
     else:
