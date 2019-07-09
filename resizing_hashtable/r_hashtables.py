@@ -29,7 +29,7 @@ def hash(string, max):
     hash = 5381
     for l in string:
         hash = ((hash << 5) + hash) + ord(l)
-    return hash % max
+    return (hash & 0xFFFFFFFF) % max
 
 
 # '''
@@ -39,15 +39,17 @@ def hash(string, max):
 # '''
 def hash_table_insert(hash_table, key, value):
     hash_table.count += 1
-    if hash_table.storage[hash(key, hash_table.count)] == None:
-        hash_table.storage[hash(key, hash_table.count)
+    if hash_table.storage[hash(key, hash_table.capacity)] == None:
+        hash_table.storage[hash(key, hash_table.capacity)
                            ] = LinkedPair(key, value)
     else:
-        def linked_list_rec(hash_table, existing_value, key, value):
-            if existing_value.next == None:
-                existing_value.next = LinkedPair(key, value)
+        hash_table.count -= 1
+
+        def linked_list_rec(hash_table, current_pair, key, value):
+            if current_pair.next == None:
+                current_pair.next = LinkedPair(key, value)
             else:
-                linked_list_rec(hash_table, existing_value.next, key, value)
+                linked_list_rec(hash_table, current_pair.next, key, value)
 
         linked_list_rec(hash_table, hash_table.storage[hash(
             key, hash_table.count)], key, value)
@@ -68,12 +70,32 @@ def hash_table_remove(hash_table, key):
 # Should return None if the key is not found.
 # '''
 def hash_table_retrieve(hash_table, key):
-    pass
+    return_value = None
+    # print('hash_table.count:', hash_table.count)
+    # print('hash(key, hash_table.capacity):',
+    #       hash(key, hash_table.capacity))
+    if hash_table.count > 0 and hash_table.storage[hash(key, hash_table.capacity)] != None:
+        def linked_list_rec(hash_table, current_pair, key):
+            nonlocal return_value
+            # print('current_pair.key, key: ', current_pair.key, key)
+            if current_pair.key == key:
+                # print('success?', current_pair.value)
+                return_value = current_pair.value
+                # print('return_value: ', return_value)
+            elif current_pair.next != None:
+                linked_list_rec(hash_table, current_pair.next, key)
+            else:
+                return
+        linked_list_rec(hash_table, hash_table.storage[hash(
+            key, hash_table.capacity)], key)
 
+    return return_value
 
 # '''
 # Fill this in
 # '''
+
+
 def hash_table_resize(hash_table):
     pass
 
@@ -85,16 +107,18 @@ def Testing():
     hash_table_insert(ht, "line_2", "Filled beyond capacity")
     hash_table_insert(ht, "line_3", "Linked list saves the day!")
 
+    print('<<<inserts passed>>>')
+
     print(hash_table_retrieve(ht, "line_1"))
     print(hash_table_retrieve(ht, "line_2"))
     print(hash_table_retrieve(ht, "line_3"))
 
-    old_capacity = len(ht.storage)
-    ht = hash_table_resize(ht)
-    new_capacity = len(ht.storage)
+    # old_capacity = len(ht.storage)
+    # ht = hash_table_resize(ht)
+    # new_capacity = len(ht.storage)
 
-    print("Resized hash table from " + str(old_capacity)
-          + " to " + str(new_capacity) + ".")
+    # print("Resized hash table from " + str(old_capacity)
+    #       + " to " + str(new_capacity) + ".")
 
 
 Testing()
