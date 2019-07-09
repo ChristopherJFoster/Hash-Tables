@@ -37,7 +37,7 @@ def hash(string, max):
 # '''
 def hash_table_insert(hash_table, key, value):
     if hash_table.storage[hash(key, hash_table.capacity)] != None and hash_table.storage[hash(key, hash_table.capacity)].key != key:
-        print('Warning: overwriting Pair')
+        print('Warning: overwriting existing Pair')
     hash_table.storage[hash(key, hash_table.capacity)] = Pair(key, value)
 
 
@@ -49,6 +49,8 @@ def hash_table_insert(hash_table, key, value):
 def hash_table_remove(hash_table, key):
     if hash_table.storage[hash(key, hash_table.capacity)] != None and hash_table.storage[hash(key, hash_table.capacity)].key == key:
         hash_table.storage[hash(key, hash_table.capacity)] = None
+    else:
+        print('Warning: supplied key does not exist')
 
 
 # '''
